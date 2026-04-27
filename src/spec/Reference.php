@@ -43,6 +43,14 @@ class Reference implements SpecObjectInterface, DocumentContextInterface, RawSpe
      */
     private $_ref;
     /**
+     * @var string|null
+     */
+    private $_summary;
+    /**
+     * @var string|null
+     */
+    private $_description;
+    /**
      * @var JsonReference|null
      */
     private $_jsonReference;
@@ -69,7 +77,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface, RawSpe
      * @param string|null $to class name of the type referenced by this Reference
      * @throws TypeErrorException in case invalid data is supplied.
      */
-    public function __construct(array $data, string $to = null)
+    public function __construct(array $data, ?string $to = null)
     {
         $this->_rawSpec = $data;
         if (!isset($data['$ref'])) {
@@ -87,15 +95,33 @@ class Reference implements SpecObjectInterface, DocumentContextInterface, RawSpe
                 'Unable to instantiate Reference Object, value of $ref must be a string.'
             );
         }
+        if (isset($data['summary']) && !is_string($data['summary'])) {
+            throw new TypeErrorException(
+                'Unable to instantiate Reference Object, value of summary must be a string.'
+            );
+        }
+        if (isset($data['description']) && !is_string($data['description'])) {
+            throw new TypeErrorException(
+                'Unable to instantiate Reference Object, value of description must be a string.'
+            );
+        }
+
         $this->_to = $to;
         $this->_ref = $data['$ref'];
+        $this->_summary = $data['summary'] ?? null;
+        $this->_description = $data['description'] ?? null;
         try {
-            $this->_jsonReference = JsonReference::createFromReference($this->_ref);
+            $this->_jsonReference = JsonReference::createFromReference(
+                $this->_ref,
+                $this->_summary,
+                $this->_description
+            );
         } catch (InvalidJsonPointerSyntaxException $e) {
             $this->_errors[] = 'Reference: value of $ref is not a valid JSON pointer: ' . $e->getMessage();
         }
-        if (count($data) !== 1) {
-            $this->_errors[] = 'Reference: additional properties are given. Only $ref should be set in a Reference Object.';
+
+        if (!empty(array_diff(array_keys($data), ['$ref', 'summary', 'description']))) {
+            $this->_errors[] = 'Reference: additional properties are given. Only $ref, summary and description should be set in a Reference Object.';
         }
     }
 
@@ -105,7 +131,11 @@ class Reference implements SpecObjectInterface, DocumentContextInterface, RawSpe
      */
     public function getSerializableData()
     {
-        return (object) ['$ref' => $this->_ref];
+        return (object) array_filter([
+            '$ref' => $this->_ref,
+            'summary' => $this->_summary,
+            'description' => $this->_description,
+        ]);
     }
 
     /**
@@ -139,6 +169,22 @@ class Reference implements SpecObjectInterface, DocumentContextInterface, RawSpe
     public function getReference()
     {
         return $this->_ref;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSummary()
+    {
+        return $this->_summary;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription()
+    {
+        return $this->_description;
     }
 
     /**
@@ -176,7 +222,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface, RawSpe
      * If you call resolveReferences() make sure to replace the Reference with the resolved object first.
      * @throws UnresolvableReferenceException in case of errors.
      */
-    public function resolve(ReferenceContext $context = null)
+    public function resolve(?ReferenceContext $context = null)
     {
         if ($context === null) {
             $context = $this->getContext();
@@ -363,7 +409,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface, RawSpe
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws UnresolvableReferenceException
      */
-    public function resolveReferences(ReferenceContext $context = null)
+    public function resolveReferences(?ReferenceContext $context = null)
     {
         throw new UnresolvableReferenceException('Cyclic reference detected, resolveReferences() called on a Reference Object.');
     }

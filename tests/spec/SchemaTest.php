@@ -102,6 +102,20 @@ JSON
         $this->assertTrue($schema->exclusiveMaximum);
         $this->assertNull($schema->minimum);
         $this->assertNull($schema->exclusiveMinimum);
+
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "integer", "exclusiveMaximum": 10}', Schema::class);
+        $this->assertNull($schema->maximum);
+        $this->assertSame(10, $schema->exclusiveMaximum);
+        $this->assertNull($schema->minimum);
+        $this->assertNull($schema->exclusiveMinimum);
+
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "integer", "exclusiveMinimum": 10}', Schema::class);
+        $this->assertNull($schema->maximum);
+        $this->assertNull($schema->exclusiveMaximum);
+        $this->assertNull($schema->minimum);
+        $this->assertSame(10, $schema->exclusiveMinimum);
     }
 
     public function testReadObject()
@@ -225,7 +239,7 @@ YAML
     }
 
 
-    public function badSchemaProvider()
+    public static function badSchemaProvider()
     {
         yield [['properties' => ['a' => 'foo']], 'Unable to instantiate cebe\openapi\spec\Schema Object with data \'foo\''];
         yield [['properties' => ['a' => 42]], 'Unable to instantiate cebe\openapi\spec\Schema Object with data \'42\''];
@@ -321,6 +335,7 @@ JSON;
             'maxProperties' => null,
             'minProperties' => null,
             'required' => null, // if set, it should not be an empty array, according to the spec
+            'const' => null,
             'enum' => null, // if it is an array, it means restriction of values
             // The following properties are taken from the JSON Schema definition but their definitions were adjusted to the OpenAPI Specification.
             'type' => null,
@@ -419,5 +434,32 @@ JSON;
         $this->assertInstanceOf(Schema::class, $person->properties['$ref']);
         $this->assertEquals('string', $person->properties['name']->type);
         $this->assertEquals('string', $person->properties['$ref']->type);
+    }
+
+    public function testArrayKeyIsPerseveredInPropertiesThatAreArrays()
+    {
+        $json = <<<'JSON'
+{
+  "webhooks": {
+    "branch-protection-rule-created": {
+      "post": {
+        "description": "A branch protection rule was created.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+JSON;
+        $openApi = Reader::readFromJson($json);
+        self::assertArrayHasKey('branch-protection-rule-created', $openApi->webhooks);
     }
 }
