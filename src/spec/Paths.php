@@ -50,7 +50,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
 
     /**
      * Create an object from spec data.
-     * @param (PathItem|array|null)[] $data spec data read from YAML or JSON
+     * @param array<string, mixed> $data spec data read from YAML or JSON
      * @throws TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data)
