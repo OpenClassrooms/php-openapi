@@ -23,7 +23,7 @@ all:
 	@echo "make install                  # install dependencies"
 	@echo "make test                     # run PHPUnit tests"
 	@echo "make lint                     # check validity of test data"
-	@echo "make stan                     # check code with PHPStan"
+	@echo "make phpstan                  # check code with PHPStan"
 	@echo ""
 	@echo "You may add the IN_DOCKER parameter to run a command inside of docker container and not directly."
 	@echo "make IN_DOCKER=1 ..."
@@ -47,12 +47,7 @@ install: composer.json package.json
 test: unit test-recursion.json test-recursion2.yaml test-recursion3_index.yaml test-empty-maps.json test-const.json
 
 unit:
-	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --colors=always $(TESTCASE)
-
-test-debug: unit-debug test-recursion.json test-recursion2.yaml test-recursion3_index.yaml test-empty-maps.json test-const.json
-
-unit-debug:
-	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --debug --testdox --colors=always -c phpunit11.xml.dist $(TESTCASE)
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --colors=always $(TESTCASE)
 
 # test specific JSON files in tests/spec/data/
 # e.g. test-recursion will run validation on tests/spec/data/recursion.json
@@ -68,7 +63,7 @@ lint: install
 	$(DOCKER_NODE) yarn run speccy lint tests/spec/data/reference/playlist.json
 	$(DOCKER_NODE) yarn run speccy lint tests/spec/data/recursion.json
 
-stan:
+phpstan:
 	$(DOCKER_PHP) php $(PHPARGS) vendor/bin/phpstan analyse -l 5 src
 
 php-cs-fixer.phar:
