@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   phpunit:
@@ -14,22 +14,12 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php:
-          - "8.3"
           - "8.4"
           - "8.5"
         dependencies:
           - "lowest"
           - "highest"
-        symfony-yaml: ['^6', '^7', '^8']
-        include:
-          - os: "windows-latest"
-            php: "8.0"
-            dependencies: "highest"
-            symfony-yaml: '5.4.2'
-          - os: "macos-latest"
-            php: "8.0"
-            dependencies: "highest"
-            symfony-yaml: '^5'
+        symfony-yaml: ["^6", "^7", "^8"]
 
     runs-on: ${{ matrix.os }}
 
