@@ -10,16 +10,16 @@ jobs:
   phpstan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.3"
+          php-version: "8.4"
           tools: composer:v2
 
       - name: "Install dependencies with Composer"
         uses: ramsey/composer-install@v2
 
       - name: PHPStan analysis
-        run: make stan
+        run: make phpstan
