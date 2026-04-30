@@ -11,8 +11,8 @@ DOCKER_PHP=
 DOCKER_NODE=
 IN_DOCKER=0
 ifeq ($(IN_DOCKER),1)
-DOCKER_PHP=docker-compose run --rm php
-DOCKER_NODE=docker-compose run --rm -w /app node
+DOCKER_PHP=docker compose run --rm php
+DOCKER_NODE=docker compose run --rm -w /app node
 endif
 
 all:
@@ -23,7 +23,7 @@ all:
 	@echo "make install                  # install dependencies"
 	@echo "make test                     # run PHPUnit tests"
 	@echo "make lint                     # check validity of test data"
-	@echo "make stan                     # check code with PHPStan"
+	@echo "make phpstan                  # check code with PHPStan"
 	@echo ""
 	@echo "You may add the IN_DOCKER parameter to run a command inside of docker container and not directly."
 	@echo "make IN_DOCKER=1 ..."
@@ -44,10 +44,10 @@ install: composer.json package.json
 	$(DOCKER_PHP) composer install --prefer-dist --no-interaction --no-progress --ansi
 	$(DOCKER_NODE) yarn install
 
-test: unit test-recursion.json test-recursion2.yaml test-recursion3_index.yaml test-empty-maps.json
+test: unit test-recursion.json test-recursion2.yaml test-recursion3_index.yaml test-empty-maps.json test-const.json
 
 unit:
-	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --colors=always $(TESTCASE)
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --colors=always $(TESTCASE)
 
 # test specific JSON files in tests/spec/data/
 # e.g. test-recursion will run validation on tests/spec/data/recursion.json
@@ -59,18 +59,12 @@ lint: install
 	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
 	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
 	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/empty-maps.json
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/const.json
 	$(DOCKER_NODE) yarn run speccy lint tests/spec/data/reference/playlist.json
 	$(DOCKER_NODE) yarn run speccy lint tests/spec/data/recursion.json
 
-stan:
+phpstan:
 	$(DOCKER_PHP) php $(PHPARGS) vendor/bin/phpstan analyse -l 5 src
-
-# copy openapi3 json schema
-schemas/openapi-v3.0.json: vendor/oai/openapi-specification/schemas/v3.0/schema.json
-	cp $< $@
-
-schemas/openapi-v3.0.yaml: vendor/oai/openapi-specification/schemas/v3.0/schema.yaml
-	cp $< $@
 
 php-cs-fixer.phar:
 	wget -q https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.7/php-cs-fixer.phar && chmod +x php-cs-fixer.phar

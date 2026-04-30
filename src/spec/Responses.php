@@ -38,7 +38,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
 
     /**
      * Create an object from spec data.
-     * @param Response[]|Reference[]|array[] $data spec data read from YAML or JSON
+     * @param array<array-key, mixed> $data spec data read from YAML or JSON
      * @throws TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data)
@@ -49,10 +49,12 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
             if (preg_match('~^(?:default|[1-5](?:[0-9][0-9]|XX))$~', $statusCode)) {
                 if ($response instanceof Response || $response instanceof Reference) {
                     $this->_responses[$statusCode] = $response;
-                } elseif (is_array($response) && isset($response['$ref'])) {
-                    $this->_responses[$statusCode] = new Reference($response, Response::class);
                 } elseif (is_array($response)) {
-                    $this->_responses[$statusCode] = new Response($response);
+                    if (isset($response['$ref'])) {
+                        $this->_responses[$statusCode] = new Reference($response, Response::class);
+                    } else {
+                        $this->_responses[$statusCode] = new Response($response);
+                    }
                 } else {
                     $givenType = gettype($response);
                     if ($givenType === 'object') {
@@ -236,7 +238,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws UnresolvableReferenceException
      */
-    public function resolveReferences(ReferenceContext $context = null)
+    public function resolveReferences(?ReferenceContext $context = null)
     {
         foreach ($this->_responses as $key => $response) {
             if ($response instanceof Reference) {

@@ -50,7 +50,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
 
     /**
      * Create an object from spec data.
-     * @param (PathItem|array|null)[] $data spec data read from YAML or JSON
+     * @param array<string, mixed> $data spec data read from YAML or JSON
      * @throws TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data)
@@ -246,7 +246,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws UnresolvableReferenceException
      */
-    public function resolveReferences(ReferenceContext $context = null)
+    public function resolveReferences(?ReferenceContext $context = null)
     {
         foreach ($this->_paths as $key => $path) {
             if ($path === null) {

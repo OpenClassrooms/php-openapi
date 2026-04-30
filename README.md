@@ -1,34 +1,30 @@
+## Atention
+This is a fork of [cebe/php-openapi](https://github.com/cebe/php-openapi). I created it as library because the pull request
+of the openapi3.1 was taking years and a lot of developers want to use it.
+
 # php-openapi
 
-Read and write [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files and make the content accessible in PHP objects.
+Read and write [OpenAPI](https://www.openapis.org/) 3.x YAML and JSON files and make the content accessible in PHP objects.
 
-It also provides a CLI tool for validating and converting OpenAPI 3.0.x Description files.
+It also provides a CLI tool for validating and converting OpenAPI 3.x Description files.
 
-[![Latest Stable Version](https://poser.pugx.org/cebe/php-openapi/v/stable)](https://packagist.org/packages/cebe/php-openapi)
-[![Total Downloads](https://poser.pugx.org/cebe/php-openapi/downloads)](https://packagist.org/packages/cebe/php-openapi)
-[![Build Status](https://github.com/cebe/php-openapi/workflows/CI/badge.svg)](https://github.com/cebe/php-openapi/actions)
+Supported OpenAPI versions:
+
+- 3.0.x
+- 3.1.x
+
+[![Latest Stable Version](https://poser.pugx.org/devizzent/cebe-php-openapi/v/stable)](https://packagist.org/packages/devizzent/cebe-php-openapi)
+[![Total Downloads](https://poser.pugx.org/devizzent/cebe-php-openapi/downloads)](https://packagist.org/packages/devizzent/cebe-php-openapi)
+[![Build Status](https://github.com/devizzent/cebe-php-openapi/workflows/CI/badge.svg)](https://github.com/devizzent/cebe-php-openapi/actions)
 
 
 ## Install
 
-    composer require cebe/php-openapi
+    composer require openclassrooms/php-openapi
 
 ## Requirements
 
-- PHP 7.1 or higher (works fine with PHP 8)
-
-## Used by
-
-This library provides a low level API for reading and writing OpenAPI files. It is used by higher level tools to
-do awesome work:
-
-- [cebe/yii2-openapi](https://github.com/cebe/yii2-openapi) Code Generator for REST API from OpenAPI 3 Descriptions, includes fake data generator.
-- [cebe/yii2-app-api](https://github.com/cebe/yii2-app-api) Yii framework application template for developing API-first applications.
-- [league/openapi-psr7-validator](https://github.com/thephpleague/openapi-psr7-validator) validates PSR-7 messages (HTTP request/response) against OpenAPI descriptions.
-- [dsuurlant/response2schema](https://github.com/dsuurlant/response2schema) a quick and easy tool for generating OpenAPI schemas based on example data.
-- [hotmeteor/spectator](https://github.com/hotmeteor/spectator) a light-weight OpenAPI testing tool for existing Laravel test suite.
-- [googoogajoob/openapi-slim4](https://github.com/googoogajoob/openapi-slim4) Configure the paths of a slim4 application from an openapi definition.
-- ... ([add yours](https://github.com/cebe/php-openapi/edit/master/README.md#L24))
+- PHP 8.2 or higher
 
 ## Usage
 
@@ -258,7 +254,7 @@ $openapi->resolveReferences(
 
 The library provides simple validation operations, that check basic OpenAPI spec requirements.
 This is the same as "structural errors found while reading the API Description file" from the CLI tool.
-This validation does not include checking against the OpenAPI v3.0 JSON schema, this is only implemented in the CLI.
+This validation does not include checking against the OpenAPI v3.0/v3.1 JSON schemas, this is only implemented in the CLI.
 
 ```
 // return `true` in case no errors have been found, `false` in case of errors.
@@ -271,48 +267,6 @@ $errors = $openapi->getErrors();
 > but the list of errors given may not be complete. Also a passing validation does not necessarily indicate a completely
 > valid spec.
 
-
-## Completeness
-
-This library is currently work in progress, the following list tracks completeness:
-
-- [x] read OpenAPI 3.0 JSON
-- [x] read OpenAPI 3.0 YAML
-- [ ] OpenAPI 3.0 Schema
-  - [x] OpenAPI Object
-  - [x] Info Object
-  - [x] Contact Object
-  - [x] License Object
-  - [x] Server Object
-  - [x] Server Variable Object
-  - [x] Components Object
-  - [x] Paths Object
-  - [x] Path Item Object
-  - [x] Operation Object
-  - [x] External Documentation Object
-  - [x] Parameter Object
-  - [x] Request Body Object
-  - [x] Media Type Object
-  - [x] Encoding Object
-  - [x] Responses Object
-  - [x] Response Object
-  - [x] Callback Object
-  - [x] Example Object
-  - [x] Link Object
-    - [ ] [Runtime Expressions](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#runtime-expressions)
-  - [x] Header Object
-  - [x] Tag Object
-  - [x] Reference Object
-  - [x] Schema Object
-    - [x] load/read
-    - [ ] validation
-  - [x] Discriminator Object
-  - [x] XML Object
-  - [x] Security Scheme Object
-  - [x] OAuth Flows Object
-  - [x] OAuth Flow Object
-  - [x] Security Requirement Object
-
 # Development
 
 You may use the docker environment for local development:
@@ -321,14 +275,3 @@ You may use the docker environment for local development:
     make IN_DOCKER=1 install
     make IN_DOCKER=1 test
     ...
-
-
-# Support
-
-**Need help with your API project?**
-
-Professional support, consulting as well as software development services are available:
-
-https://www.cebe.cc/en/contact
-
-Development of this library is sponsored by [cebe.:cloud: "Your Professional Deployment Platform"](https://cebe.cloud).

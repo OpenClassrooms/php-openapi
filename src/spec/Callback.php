@@ -27,7 +27,7 @@ class Callback implements SpecObjectInterface, DocumentContextInterface
      */
     private $_url;
     /**
-     * @var PathItem
+     * @var PathItem|null
      */
     private $_pathItem;
     /**
@@ -85,7 +85,7 @@ class Callback implements SpecObjectInterface, DocumentContextInterface
     }
 
     /**
-     * @return PathItem
+     * @return PathItem|null
      */
     public function getRequest(): ?PathItem
     {
@@ -93,7 +93,7 @@ class Callback implements SpecObjectInterface, DocumentContextInterface
     }
 
     /**
-     * @param PathItem $request
+     * @param PathItem|null $request
      */
     public function setRequest(?PathItem $request): void
     {
@@ -133,7 +133,7 @@ class Callback implements SpecObjectInterface, DocumentContextInterface
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws UnresolvableReferenceException
      */
-    public function resolveReferences(ReferenceContext $context = null)
+    public function resolveReferences(?ReferenceContext $context = null)
     {
         if ($this->_pathItem !== null) {
             $this->_pathItem->resolveReferences($context);
@@ -163,7 +163,7 @@ class Callback implements SpecObjectInterface, DocumentContextInterface
         $this->_baseDocument = $baseDocument;
         $this->_jsonPointer = $jsonPointer;
 
-        if ($this->_pathItem instanceof DocumentContextInterface) {
+        if ($this->_pathItem !== null) {
             $this->_pathItem->setDocumentContext($baseDocument, $jsonPointer->append($this->_url));
         }
     }

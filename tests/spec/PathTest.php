@@ -66,7 +66,7 @@ JSON
         }
     }
 
-    public function testCreateionFromObjects()
+    public function testCreationFromObjects()
     {
         $paths = new Paths([
             '/pets' => new PathItem([
@@ -88,7 +88,7 @@ JSON
         $this->assertSame('The pets list is gone 🙀', $paths->getPath('/pets')->get->responses->getResponse(404)->description);
     }
 
-    public function badPathsConfigProvider()
+    public static function badPathsConfigProvider()
     {
         yield [['/pets' => 'foo'], 'Path MUST be either array or PathItem object, "string" given'];
         yield [['/pets' => 42], 'Path MUST be either array or PathItem object, "integer" given'];
