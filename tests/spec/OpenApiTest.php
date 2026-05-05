@@ -73,7 +73,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(\cebe\openapi\spec\Components::class, $openapi->components);
 
         // security
-        $this->assertNull($openapi->security); # since it is not present in spec
+        $this->assertAllInstanceOf(\cebe\openapi\spec\SecurityRequirement::class, $openapi->security);
 
         // tags
         $this->assertAllInstanceOf(\cebe\openapi\spec\Tag::class, $openapi->tags);
@@ -235,8 +235,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         }
 
         // security
-        $openapi->security !== null && $this->assertInstanceOf(\cebe\openapi\spec\SecurityRequirements::class, $openapi->security);
-        $openapi->security !== null && $this->assertAllInstanceOf(\cebe\openapi\spec\SecurityRequirement::class, $openapi->security->getRequirements());
+        $this->assertAllInstanceOf(\cebe\openapi\spec\SecurityRequirement::class, $openapi->security);
 
         // tags
         $this->assertAllInstanceOf(\cebe\openapi\spec\Tag::class, $openapi->tags);

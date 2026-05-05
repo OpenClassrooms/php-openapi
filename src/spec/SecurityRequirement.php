@@ -10,20 +10,13 @@ namespace cebe\openapi\spec;
 use cebe\openapi\SpecBaseObject;
 
 /**
- * A required security scheme to execute this operation.
+ * Lists the required security schemes to execute this operation.
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#securityRequirementObject
  *
  */
 class SecurityRequirement extends SpecBaseObject
 {
-    private $_securityRequirement;
-    public function __construct(array $data)
-    {
-        parent::__construct($data);
-        $this->_securityRequirement = $data;
-    }
-
     /**
      * @return array array of attributes available in this object.
      */
@@ -40,10 +33,5 @@ class SecurityRequirement extends SpecBaseObject
      */
     protected function performValidation()
     {
-    }
-
-    public function getSerializableData()
-    {
-        return $this->_securityRequirement;
     }
 }

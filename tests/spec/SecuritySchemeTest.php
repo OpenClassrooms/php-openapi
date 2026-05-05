@@ -11,7 +11,6 @@ use cebe\openapi\spec\SecurityScheme;
  * @covers \cebe\openapi\spec\OAuthFlows
  * @covers \cebe\openapi\spec\OAuthFlow
  * @covers \cebe\openapi\spec\SecurityRequirement
- * @covers \cebe\openapi\spec\SecurityRequirements
  */
 class SecuritySchemeTest extends \PHPUnit\Framework\TestCase
 {
@@ -200,10 +199,10 @@ security:
 YAML
         );
 
-        $this->assertSame([], $openapi->paths->getPath('/path/one')->post->security->getRequirements());
+        $this->assertSame([], $openapi->paths->getPath('/path/one')->post->security);
         $this->assertSame(null, $openapi->paths->getPath('/path/two')->post->security);
 
-        $this->assertCount(1, $openapi->security->getRequirements());
-        $this->assertSame([], $openapi->security->getRequirement('Bearer')->getSerializableData());
+        $this->assertCount(1, $openapi->security);
+        $this->assertSame([], $openapi->security[0]->Bearer);
     }
 }
