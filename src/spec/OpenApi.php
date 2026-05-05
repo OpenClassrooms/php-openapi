@@ -7,7 +7,6 @@
 
 namespace cebe\openapi\spec;
 
-use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\SpecBaseObject;
 
 /**
@@ -28,9 +27,9 @@ use cebe\openapi\SpecBaseObject;
  */
 class OpenApi extends SpecBaseObject
 {
-    const VERSION_3_0 = '3.0';
-    const VERSION_3_1 = '3.1';
-    const VERSION_UNSUPPORTED = 'unsupported';
+    const VERSION_3_0 = "3.0";
+    const VERSION_3_1 = "3.1";
+    const VERSION_UNSUPPORTED = "unsupported";
 
     /**
      * Pattern used to validate OpenAPI versions.
@@ -43,15 +42,15 @@ class OpenApi extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'openapi' => Type::STRING,
-            'info' => Info::class,
-            'servers' => [Server::class],
-            'paths' => Paths::class,
-            'webhooks' => [PathItem::class],
-            'components' => Components::class,
-            'security' => [SecurityRequirement::class],
-            'tags' => [Tag::class],
-            'externalDocs' => ExternalDocumentation::class,
+            "openapi" => Type::STRING,
+            "info" => Info::class,
+            "servers" => [Server::class],
+            "paths" => Paths::class,
+            "webhooks" => [PathItem::class],
+            "components" => Components::class,
+            "security" => [SecurityRequirement::class],
+            "tags" => [Tag::class],
+            "externalDocs" => ExternalDocumentation::class,
         ];
     }
 
@@ -63,9 +62,7 @@ class OpenApi extends SpecBaseObject
         return [
             // Spec: If the servers property is not provided, or is an empty array,
             // the default value would be a Server Object with a url value of /.
-            'servers' => [
-                new Server(['url' => '/'])
-            ],
+            "servers" => [new Server(["url" => "/"])],
         ];
     }
 
@@ -74,8 +71,8 @@ class OpenApi extends SpecBaseObject
         $ret = parent::__get($name);
         // Spec: If the servers property is not provided, or is an empty array,
         // the default value would be a Server Object with a url value of /.
-        if ($name === 'servers' && $ret === []) {
-            return $this->attributeDefaults()['servers'];
+        if ($name === "servers" && $ret === []) {
+            return $this->attributeDefaults()["servers"];
         }
         return $ret;
     }
@@ -86,13 +83,19 @@ class OpenApi extends SpecBaseObject
     public function performValidation()
     {
         if ($this->getMajorVersion() === static::VERSION_3_0) {
-            $this->requireProperties(['openapi', 'info', 'paths']);
+            $this->requireProperties(["openapi", "info", "paths"]);
         } else {
-            $this->requireProperties(['openapi', 'info'], ['paths', 'webhooks', 'components']);
+            $this->requireProperties(
+                ["openapi", "info"],
+                ["paths", "webhooks", "components"],
+            );
         }
 
-        if (!empty($this->openapi) && !preg_match(static::PATTERN_VERSION, $this->openapi)) {
-            $this->addError('Unsupported openapi version: ' . $this->openapi);
+        if (
+            !empty($this->openapi) &&
+            !preg_match(static::PATTERN_VERSION, $this->openapi)
+        ) {
+            $this->addError("Unsupported openapi version: " . $this->openapi);
         }
     }
 
@@ -112,9 +115,9 @@ class OpenApi extends SpecBaseObject
         }
         if (preg_match(static::PATTERN_VERSION, $this->openapi, $matches)) {
             switch ($matches[1]) {
-                case '3.0':
+                case "3.0":
                     return static::VERSION_3_0;
-                case '3.1':
+                case "3.1":
                     return static::VERSION_3_1;
             }
         }
