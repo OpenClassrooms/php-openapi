@@ -7,6 +7,7 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\SpecBaseObject;
 
 /**
@@ -48,7 +49,7 @@ class OpenApi extends SpecBaseObject
             'paths' => Paths::class,
             'webhooks' => [PathItem::class],
             'components' => Components::class,
-            'security' => SecurityRequirements::class,
+            'security' => [SecurityRequirement::class],
             'tags' => [Tag::class],
             'externalDocs' => ExternalDocumentation::class,
         ];

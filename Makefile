@@ -37,8 +37,6 @@ fix-style: php-cs-fixer.phar
 	$(DOCKER_PHP) vendor/bin/indent --spaces .php_cs.dist
 	$(DOCKER_PHP) ./php-cs-fixer.phar fix src/ --diff
 
-cli:
-	docker-compose run --rm php bash
 
 install: composer.json package.json
 	$(DOCKER_PHP) composer install --prefer-dist --no-interaction --no-progress --ansi
